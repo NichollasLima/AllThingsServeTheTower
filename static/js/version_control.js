@@ -1,9 +1,10 @@
-    const timestamp = new Date().getTime();
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = `styles.css?v=${timestamp}`;
-    document.head.appendChild(link);
+(function () {
+  const version = new Date().getTime(); // Gera timestamp
 
-    const script = document.createElement('script');
-    script.src = `app.js?v=${timestamp}`;
-    document.body.appendChild(script);
+  // Adiciona CSS com versão
+  const css = document.createElement('link');
+  css.rel = 'stylesheet';
+  css.href = `/AllThingsServeTheTower/style/main.css?v=${version}`;
+  document.head.appendChild(css);
+
+})();

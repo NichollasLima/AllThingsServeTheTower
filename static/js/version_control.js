@@ -32,3 +32,10 @@
   // }
 
 })();
+
+const version = new Date().getTime();
+
+// Injetar search.js com bust cache
+const searchScript = document.createElement('script');
+searchScript.src = `/AllThingsServeTheTower/static/js/search.js?v=${version}`;
+document.body.appendChild(searchScript);

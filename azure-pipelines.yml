@@ -9,24 +9,20 @@ pool:
 variables:
   GITHUB_USER: nichollaslima
   GITHUB_REPO: AllThingsServeTheTower
-  GITHUB_TOKEN: $(Token)  # 💡 isso deve vir de uma variável secreta no DevOps
+  GITHUB_TOKEN: $(Token)  # variável secreta
 
 steps:
 - script: |
-    echo "📥 Clonando repositório do Azure DevOps (este próprio repositório)..."
-    git clone --bare https://$(System.AccessToken)@dev.azure.com/$(System.CollectionUri)/$(Build.Repository.Name) repo.git
-    cd repo.git
+    echo "📥 Clonando repositório do Azure DevOps..."
+    git config --global credential.helper store
+    git clone https://$(System.AccessToken)@dev.azure.com/$(System.CollectionUri)/$(System.TeamProject)/_git/$(Build.Repository.Name) repo
+    cd repo
 
     echo "📡 Adicionando GitHub como remote"
     git remote add github https://$(GITHUB_USER):$(GITHUB_TOKEN)@github.com/$(GITHUB_USER)/$(GITHUB_REPO).git
 
-    echo "🚀 Enviando tudo para o GitHub (mirror)"
-    git push --mirror github
-
-    echo "Pushing to github"
-    git remote add github https://<user>:<token>@github.com/<user>/<repo>.git
-    git push github HEAD:main --force
-
+    echo "🚀 Fazendo push forçado da branch main para o GitHub"
+    git push github main --force
   displayName: 'Mirror para GitHub'
   env:
     SYSTEM_ACCESSTOKEN: $(AzureDevOpsToken)

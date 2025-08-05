@@ -7,7 +7,7 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  GITHUB_TOKEN: $(Token)  # variável secreta no Azure DevOps
+  GITHUB_TOKEN: $(Token)  # variável secreta configurada no Azure DevOps
   GITHUB_USER: NichollasLima
   GITHUB_REPO: AllThingsServeTheTower
 
@@ -21,12 +21,11 @@ steps:
       echo "📡 Remotes configurados:"
       git remote -v
 
+      echo "➕ Removendo remote github se existir..."
+      git remote remove github || true
+
       echo "➕ Adicionando GitHub como remote..."
       git remote add github https://$(GITHUB_USER):$(GITHUB_TOKEN)@github.com/$(GITHUB_USER)/$(GITHUB_REPO).git
-
-      echo "Limpando o historico"
-      git gc --prune=now
-      git remote prune origin
 
       echo "🚀 Realizando push forçado para main"
       git push github HEAD:refs/heads/main --force

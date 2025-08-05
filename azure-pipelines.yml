@@ -7,25 +7,33 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  GITHUB_TOKEN: $(Token)  # variável secreta configurada no Azure DevOps
+  AZURE_DEVOPS_PAT: $(AzureDevOpsToken)    # Variável secreta do Azure DevOps
+  GITHUB_TOKEN: $(Token)             # Variável secreta do GitHub
   GITHUB_USER: NichollasLima
   GITHUB_REPO: AllThingsServeTheTower
 
 steps:
 - script: |
-    git clone https://MyProjectsNRSL@dev.azure.com/MyProjectsNRSL/Atlas/_git/AllThingsServeTheTower repo
+    echo "📥 Clonando o repositório do Azure DevOps usando PAT..."
+    git clone https://MyProjectsNRSL:$(AZURE_DEVOPS_PAT)@dev.azure.com/MyProjectsNRSL/Atlas/_git/AllThingsServeTheTower repo
+
     cd repo
 
+    echo "🔎 Verificando integridade do repositório local..."
     git fsck --full
+    echo "🧹 Otimizando repositório local..."
     git gc --prune=now --aggressive
 
-    git config --global user.name "Azure Mirror"
-    git config --global user.email "azure@mirror.dev"
+    git config user.name "Azure Mirror"
+    git config user.email "azure@mirror.dev"
 
+    echo "📡 Configurando remote para GitHub..."
     git remote add github https://$(GITHUB_USER):$(GITHUB_TOKEN)@github.com/$(GITHUB_USER)/$(GITHUB_REPO).git
 
+    echo "🔀 Branch atual:"
     git branch
-    git log -1
+    git log -1 --oneline
 
+    echo "🚀 Realizando push forçado para GitHub main"
     git push github HEAD:refs/heads/main --force
   displayName: 'Mirror to GitHub'

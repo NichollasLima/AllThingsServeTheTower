@@ -7,12 +7,14 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  GITHUB_TOKEN: $(Token)  # Token do GitHub (secreto no Azure)
+  GITHUB_TOKEN: $(Token)  # Token secreto configurado no Azure DevOps
   GITHUB_USER: NichollasLima
   GITHUB_REPO: AllThingsServeTheTower
 
 steps:
-  - checkout: self  # Azure já clona o repositório automaticamente
+  - checkout: self
+    persistCredentials: true
+    fetchDepth: 0  # Importante para ter todas as refs (evita o erro)
 
   - script: |
       git config --global user.name "Azure Mirror"
@@ -23,6 +25,9 @@ steps:
 
       echo "➕ Adicionando GitHub como remote..."
       git remote add github https://$(GITHUB_USER):$(GITHUB_TOKEN)@github.com/$(GITHUB_USER)/$(GITHUB_REPO).git
+
+      echo "🔍 Garantindo checkout da branch main"
+      git checkout main
 
       echo "🚀 Realizando push forçado para main no GitHub..."
       git push github main --force

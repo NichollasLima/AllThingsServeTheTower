@@ -10,6 +10,6 @@ steps:
   - checkout: self
 
   - script: |
-      git remote add github https://nichollas.lima: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@github.com/NichollasLima/AllThingsServeTheTower.git
+      git remote add github https://azure.devops:$(Token)@github.com:NichollasLima/AllThingsServeTheTower.git
       git push github main --force
     displayName: 'Mirror to GitHub'

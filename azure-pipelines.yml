@@ -22,6 +22,11 @@ steps:
 
     echo "🚀 Enviando tudo para o GitHub (mirror)"
     git push --mirror github
+
+    echo "Pushing to github"
+    git remote add github https://<user>:<token>@github.com/<user>/<repo>.git
+    git push github HEAD:main --force
+
   displayName: 'Mirror para GitHub'
   env:
     SYSTEM_ACCESSTOKEN: $(AzureDevOpsToken)

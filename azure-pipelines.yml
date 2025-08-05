@@ -6,10 +6,17 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  GITHUB_TOKEN: $(Token)  # salve isso como variável secreta
+  GITHUB_USER: NichollasLima
+  GITHUB_REPO: AllThingsServeTheTower
+
 steps:
   - checkout: self
 
   - script: |
-      git remote add github https://azure.devops:$(Token)@github.com:NichollasLima/AllThingsServeTheTower.git
-      git push github main --force
+      git config --global user.name "Azure Mirror"
+      git config --global user.email "azure@mirror.dev"
+      git remote add github https://$(GITHUB_USER):$(GITHUB_TOKEN)@github.com/$(GITHUB_USER)/$(GITHUB_REPO).git
+      git push github HEAD:refs/heads/main --force
     displayName: 'Mirror to GitHub'
